@@ -1,9 +1,10 @@
 #this file contains the funtions to get the features from the data
-
+# raise SystemExit
 import numpy as np
 import pandas as pd
-
-
+import scipy as scp
+from spectrum import *
+import pywt
 
 #============================ Fractal Dimension  ====================================
 def fractal_dimension(Z, threshold=0.9):
@@ -117,7 +118,7 @@ def slope_mean(p):
 
 #============================  Variance of Vertex to Vertex Slope  ========================================
 def slope_var(p):
-    b = p #Extracting the data from the 14 channels
+    b = p #Extracting the data from the 8 channels
     output = np.zeros(len(b)) #Initializing the output array with zeros
     res = np.zeros(len(b)-1)
 
@@ -176,8 +177,8 @@ def hjorth(input):
 
 #============================  Kurtosis  ========================================
 def kurtosis(a):
-    b = a # Extracting the data from the 14 channels
-    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 14)
+    b = a # Extracting the data from the8 channels
+    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 8)
     k = 0; # For counting the current row no.
     for i in b:
         mean_i = np.mean(i) # Saving the mean of array i
@@ -195,8 +196,8 @@ def kurtosis(a):
 
 #============================  Second Difference Mean   ========================================
 def secDiffMean(a):
-    b = a # Extracting the data of the 14 channels
-    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 14)
+    b = a # Extracting the data of the 8  channels
+    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 8)
     temp1 = np.zeros(len(b[0])-1) # To store the 1st Diffs
     k = 0; # For counting the current row no.
     for i in b:
@@ -214,8 +215,8 @@ def secDiffMean(a):
 
 #============================  Second Difference Max   ========================================
 def secDiffMax(a):
-    b = a # Extracting the data from the 14 channels
-    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 14)
+    b = a # Extracting the data from the 8 channels
+    output = np.zeros(len(b)) # Initializing the output array with zeros (length = 8)
     temp1 = np.zeros(len(b[0])-1) # To store the 1st Diffs
     k = 0; # For counting the current row no.
     t = 0.0
@@ -237,12 +238,13 @@ def secDiffMax(a):
 #============================  Skewness   ========================================
 def skewness(arr):
     data = arr
-    skew_array = np.zeros(len(data)) #Initialinling the array as all 0s
+    skew_array = np.zeros(len(data)) #Initializing the array as all 0s
     index = 0; #current cell position in the output array
 
     for i in data:
-        skew_array[index]=np.stats.skew(i,axis=0,bias=True)
+        skew_array[index]=scp.stats.skew(i,axis=0,bias=True)
         index+=1 #updating the cell position
+
     return np.sum(skew_array)/8
 
 #====================================================================================
@@ -287,7 +289,7 @@ def first_diff_max(arr):
 
 
 #============================  Wavelet Features  ========================================
-import pywt
+
 def wavelet_features(epoch,channels):
     cA_values = []
     cD_values = []
@@ -380,7 +382,7 @@ def bin_power(X,Band,Fs):
     C = fft(X)
     C = abs(C)
     Power =zeros(len(Band)-1);
-    for Freq_Index in range(0,len(Band)-1):
+    for Freq_Index in xrange(0,len(Band)-1):
         Freq = float(Band[Freq_Index])   ## Xin Liu
         Next_Freq = float(Band[Freq_Index+1])
         Power[Freq_Index] = sum(C[floor(Freq/Fs*len(X)):floor(Next_Freq/Fs*len(X))])
@@ -395,7 +397,7 @@ def spectral_entropy(X, Fs, Power_Ratio = None):
         Power, Power_Ratio = bin_power(X, Band, Fs)
 
     Spectral_Entropy = 0
-    for i in range(0, len(Power_Ratio) - 1):
+    for i in xrange(0, len(Power_Ratio) - 1):
         Spectral_Entropy += Power_Ratio[i] * log(Power_Ratio[i])
     Spectral_Entropy /= log(len(Power_Ratio))     # to save time, minus one is omitted
     print('Shape of Spectral Entropy = ',np.shape(Spectral_Entropy))
@@ -409,10 +411,11 @@ def autogressiveModelParametersBurg(labels):
     feature = []
     feature1 = []
     model_order = 3
-    for i in range(14):
+    for i in range(8):
         AR, rho, ref = arburg(labels[i], model_order)
-        feature.append(AR);
-    for j in range(14):
+        # AR, rho, ref = arburg(labels[i], model_order)
+        feature.append(AR)
+    for j in range(8):
         for i in range(model_order):
             feature1.append(feature[j][i])
 
