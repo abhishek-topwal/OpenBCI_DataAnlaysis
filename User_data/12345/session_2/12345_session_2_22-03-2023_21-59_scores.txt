@@ -1,12 +1,12 @@
 Communication Module
-Response Times: 30 16.929433 0 0 14.355777 0 
-Response Accuracies: 0 1 1 1 1 1 
+Response Times: 15.213925 0 0 30 0 16.173155 0 
+Response Accuracies: 1 1 1 0 1 1 1 
 END
 SYSMON MODULE
-Total Failures: 13
-Total Hits: 10
-False Alarms: 3
-Average Response Time: 1.3467791538461538
+Total Failures: 17
+Total Hits: 13
+False Alarms: 4
+Average Response Time: 1.1648461764705882
 END
 TRACKING MODULE
 Mean Deviation: [0.022485775689521117, 0.02884574083805165, 0.03354741791457362, 0.03675740920384794, 0.03815120946441021, 0.036824245890916076]
