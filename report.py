@@ -83,7 +83,7 @@ def getCommScore(comm_list):
 
 
 #************************************SYSMON MODULE************************************
-def getSysmonScore(sysmon_list):
+def getSysmonScore(sysmon_list,time_dict):
     total_failures = 0
     total_hits = 0
     false_alarm = 0
@@ -98,13 +98,16 @@ def getSysmonScore(sysmon_list):
 
             #check if the next event is a miss
             if(sysmon_list[i+1][5]=='MISS\n'):
+                #get the timestamp
+                time1 = sysmon_list[i+1][0].split('.')[0]
+                time_dict[time1] = 1
                 false_alarm += 1
 
             #calculate response time
             time1 = datetime.strptime(sysmon_list[i][0], '%H:%M:%S.%f')
             time2 = datetime.strptime(sysmon_list[i+1][0], '%H:%M:%S.%f')
             res = time2 - time1
-            print(res.total_seconds())
+            # print(res.total_seconds())
             response_time += res.total_seconds()
 
     avg_response_time = response_time/total_failures
